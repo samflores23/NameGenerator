@@ -22,9 +22,9 @@ public class NameGenerator
     
     // Strings
     static String menu = "\nChoose from the following:\n1. Generate random names\n2. Exit\n\n";
-    static String wordOptions = "Enter the number of words per name (enter\'m\' " +
+    static String wordOptions = "Enter the number of words per name (enter 'm' " +
         "to go back to main menu):\n\n";
-    static String query = "\nGenerate more? [y]es, [n]o, [m]enu:\n\n";
+    static String query = "\nHit Enter to generate more, 'q' to quit, 'm' for menu:\n\n";
     
     /**
      * Constructor for objects
@@ -71,19 +71,20 @@ public class NameGenerator
                     System.out.print( wordOptions + "> " );
                     if( keys.hasNext( "m" ) )
                     {
-                        keys.next();
+                        keys.nextLine();
                         break;
                     }
                     
                     try {
-                        numOfWords = keys.nextInt();
+                        numOfWords = keys.nextInt(); // Only gets the next token in line
                     }
                     catch( Exception e ) {
                         System.out.println("An error occured, invalid input!");
                         keys.nextLine();
                         break;
                     }
-                    
+                    // Advance to next line for input
+                    keys.nextLine();
                     done = arrange( numOfWords );
                     break;
                 case 2:
@@ -140,15 +141,15 @@ public class NameGenerator
                 System.out.print( query );
                 System.out.print( "> " );
                 
-                menuOption2 = keys.next();
+                menuOption2 = keys.nextLine();
                 
-                if( menuOption2.equalsIgnoreCase( "no" ) || menuOption2.equalsIgnoreCase( "n" ) )
+                if( menuOption2.equalsIgnoreCase( "q" ) || menuOption2.equalsIgnoreCase( "quit" ) )
                 {
                     // done, exit
                     return true;
                 }
                 
-                if( menuOption2.equalsIgnoreCase( "yes" ) || menuOption2.equalsIgnoreCase( "y" ) )
+                if( menuOption2.equalsIgnoreCase( "" ) || menuOption2.equalsIgnoreCase( "" ) )
                 {
                     break;
                 }
