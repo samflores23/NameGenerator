@@ -2,6 +2,7 @@ import java.io.*;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.HashMap;
 /**
  * Simple terminal program to generate random names from words read
  * from text file "words.txt". Text file should reside in same directory
@@ -103,6 +104,9 @@ public class NameGenerator
         randomNums = new Random();
         // Populate the string array list
         theWords = new ArrayList<String> ();
+        // Create a hashmap for words used to avoid same word selection
+        HashMap<String, String> wordsUsed = new HashMap( numWordsOut );
+        // Open the words file
         File file = new File( "words.txt" );
         // For user input
         String menuOption2 = null;
@@ -118,20 +122,30 @@ public class NameGenerator
         {
             e.printStackTrace();
         }
+        // Get size of array list
+        int sz = theWords.size();
         
         // Main arrange loop        
         while( true )
         {
-            int r;
-            int sz = theWords.size();
+            String word = null;
+            int rand;
+            // Clear all mappings (reset words used)
+            wordsUsed.clear();
             // Print spacing
             System.out.print( "     " );
             // Do the magic
             for( int i = 0; i < numWordsOut; i++ )
             {
-                r = randomNums.nextInt( sz*2 );
+                // Make sure haven't used this word. If so, get another
+                do {
+                    rand = randomNums.nextInt( sz - 1 );
+                    word = theWords.get( rand );
+                } while( wordsUsed.containsKey( word ) );
+                // Add the word to the words used hashmap
+                wordsUsed.put( word, "" );
                 // Print words
-                System.out.print( theWords.get( r % sz ) + " " );
+                System.out.print( theWords.get( rand ) + " " );
             }
             // New line for output
             System.out.println();
@@ -151,6 +165,7 @@ public class NameGenerator
                 
                 if( menuOption2.equalsIgnoreCase( "" ) || menuOption2.equalsIgnoreCase( "" ) )
                 {
+                    // User hit Enter key, continue execution
                     break;
                 }
                 
@@ -164,9 +179,6 @@ public class NameGenerator
                     System.out.println("Invalid input!");
                 }
             } while( true );
-            
         }
-       
     }
-    
 }
