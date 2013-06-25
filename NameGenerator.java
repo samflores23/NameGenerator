@@ -20,6 +20,7 @@ public class NameGenerator
     static int numOfWords = 0;
     static ArrayList<String> theWords = null;
     static Random randomNums = null;
+    static HashMap<String, String> wordsUsed = null;
     
     // Strings
     static String menu = "\nChoose from the following:\n1. Generate random names\n2. Exit\n\n";
@@ -43,8 +44,7 @@ public class NameGenerator
     public static void main(String[] args)
     {
         // Print welcome
-        System.out.println("Welome to the random name generator!");
-        
+        System.out.println("Welcome to the random name generator!");
         // Main program loop
         do {
             
@@ -60,7 +60,7 @@ public class NameGenerator
                     menuOpt = keys.nextInt();
                 }
                 catch( Exception e ) {
-                    System.out.println("An error occured, invalid input!");
+                    System.out.println("An error occurred, invalid input!");
                     keys.nextLine();
                 }
                 
@@ -68,6 +68,7 @@ public class NameGenerator
             
             // Determine user selection
             switch ( menuOpt ) {
+                /*-------------------- User wants to use the generator --------------------*/
                 case 1:
                     System.out.print( wordOptions + "> " );
                     if( keys.hasNext( "m" ) )
@@ -80,14 +81,33 @@ public class NameGenerator
                         numOfWords = keys.nextInt(); // Only gets the next token in line
                     }
                     catch( Exception e ) {
-                        System.out.println("An error occured, invalid input!");
+                        System.out.println("An error occurred, invalid input!");
                         keys.nextLine();
                         break;
                     }
                     // Advance to next line for input
                     keys.nextLine();
+                    
+                    // Set up the words array list
+                    theWords = new ArrayList<String> ();
+                    // Open the words file
+                    File file = new File( "words.txt" );
+                    try {
+                        Scanner fileScanner = new Scanner( file );
+                        while( fileScanner.hasNextLine() )
+                        {
+                            theWords.add( fileScanner.nextLine() );
+                        }
+                        fileScanner.close();
+                    } 
+                    catch( Exception e )
+                    {
+                        e.printStackTrace();
+                    }
+					// Call function to begin generating names
                     done = arrange( numOfWords );
                     break;
+                /*---------------------- User wants to exit program -----------------------*/
                 case 2:
                     done = true;
                     break;
@@ -95,36 +115,24 @@ public class NameGenerator
             
         } while( !done );
         
-        System.out.println( "Goodbye! :)" );
+        System.out.println( "\nGoodbye! :)" );
     }
-    
+	
+    /**
+	 * This method runs the name generation part of the program
+	 * @param  numWordsOut  An integer representing the number of words to be output per name
+	 * @return A boolean indicating true if the user wants to quit, false if user wants to continue running
+	 */
     private static boolean arrange( int numWordsOut )
     {
         //Initialize random number generator
         randomNums = new Random();
-        // Populate the string array list
-        theWords = new ArrayList<String> ();
         // Create a hashmap for words used to avoid same word selection
-        HashMap<String, String> wordsUsed = new HashMap( numWordsOut );
-        // Open the words file
-        File file = new File( "words.txt" );
+        wordsUsed = new HashMap( numWordsOut );
         // For user input
-        String menuOption2 = null;
-        try {
-            Scanner fileScanner = new Scanner( file );
-            while( fileScanner.hasNextLine() )
-            {
-                theWords.add( fileScanner.nextLine() );
-            }
-            fileScanner.close();
-        } 
-        catch( Exception e )
-        {
-            e.printStackTrace();
-        }
+        String userResponse = null;
         // Get size of array list
         int sz = theWords.size();
-        
         // Main arrange loop        
         while( true )
         {
@@ -155,21 +163,21 @@ public class NameGenerator
                 System.out.print( query );
                 System.out.print( "> " );
                 
-                menuOption2 = keys.nextLine();
+                userResponse = keys.nextLine();
                 
-                if( menuOption2.equalsIgnoreCase( "q" ) || menuOption2.equalsIgnoreCase( "quit" ) )
+                if( userResponse.equalsIgnoreCase( "q" ) || userResponse.equalsIgnoreCase( "quit" ) )
                 {
                     // done, exit
                     return true;
                 }
                 
-                if( menuOption2.equalsIgnoreCase( "" ) || menuOption2.equalsIgnoreCase( "" ) )
+                if( userResponse.equalsIgnoreCase( "" ) || userResponse.equalsIgnoreCase( "" ) )
                 {
                     // User hit Enter key, continue execution
                     break;
                 }
                 
-                if( menuOption2.equalsIgnoreCase( "menu" ) || menuOption2.equalsIgnoreCase( "m" ) )
+                if( userResponse.equalsIgnoreCase( "menu" ) || userResponse.equalsIgnoreCase( "m" ) )
                 {
                     // done but don't exit, go to menu
                     return false;
